@@ -76,6 +76,7 @@ int get_next_line(int fd, char **line)
 {
 	char buffer[BUFFER_SIZE + 1];
 	static char	*chr = NULL;
+	static char	*rest = NULL;
 	static size_t i = 0;
 	size_t index_found;
 	size_t repeat;
@@ -87,10 +88,13 @@ int get_next_line(int fd, char **line)
 	if(fd < 0 || BUFFER_SIZE <= 0 || (!line))
 		return (-1);
 	printf("\n\n\n\n\nFunktion wird ausgeführt\n");
-	if(chr != NULL)
+	if(rest != NULL)
 	{
 		//printf("if, %s, len: %i \n", chr, strlen(chr) + strlen(*line) + 1);
-		ft_strlcat(*line, chr, strlen(chr) + strlen(*line) + 1);
+		ft_strlcat(*line, rest, strlen(rest) + strlen(*line) + 1);
+		printf("Resteverwertung:i:%i, len: %i\n", i, strlen(rest));
+		i += strlen(rest);
+		
 		//nicht einfach hinzufuegen, da koennte auch ein \n drin sein
 		//printf("line: %s\n", *line);
 	}
@@ -99,9 +103,8 @@ int get_next_line(int fd, char **line)
 	while(repeat && j == BUFFER_SIZE)
 	{
 		j = read(fd, &buffer, BUFFER_SIZE);
-		printf("%i, %i", BUFFER_SIZE, j);
 		if (buffer[0] == '\0')
-			return (0);
+			return (0); //überarbeitbar
 			//EOF
 		if (j == -1)
 			return (-1);
@@ -109,24 +112,22 @@ int get_next_line(int fd, char **line)
 		{
 			buffer[j] = '\0';
 			chr = strchr(buffer, '\n');
-			printf("p: %s\n j: %i\n,buffer: %s\n, i: %i\n", chr, (int) j, buffer, (int) i);
+			printf("chr: %s\n j: %i\n,buffer: %s\n, i: %i\n", chr, (int) j, buffer, (int) i);
 
 			if (chr != NULL)
 			{
 				repeat = 0;
 				index_found = chr - buffer;
-				
+				rest = ft_substr(buffer, index_found + 1, BUFFER_SIZE - index_found + 1);
+				printf("buffer: %s, rest: %s, index_found: %i, BUFFER_SIZE - index_found + 1: %i \n", buffer, rest, index_found, BUFFER_SIZE - index_found + 1);
 			}
 			else
-				index_found = BUFFER_SIZE;
-
-			printf("if wid ausgefuehrt\n");
-			chr = ft_substr(buffer, index_found + 1, BUFFER_SIZE - index_found + 1);
-			printf("buffer: %s, chr: %s, index_found: %i, BUFFER_SIZE - index_found + 1: %i \n", buffer, chr, index_found, BUFFER_SIZE - index_found + 1);
+				index_found = BUFFER_SIZE;			
+			
 
 			ft_strlcat(*line, buffer,  i + index_found + 1);
-			//printf("i: %i,line: %s\n", i + index_found, *line);
-			i += j;
+			printf("i+index+1: %i,line: %s\n", i + index_found + 1, *line);
+			i += index_found;
 		}
 		
 	}

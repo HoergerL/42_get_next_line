@@ -17,6 +17,29 @@
 #include <unistd.h>
 #include <string.h>
 
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
+{
+	unsigned int	len_src;
+	unsigned int	i;
+
+	len_src = 0;
+	i = 0;
+	if (dst == 0 && src == 0)
+		return (0);
+	while (src[len_src])
+		len_src++;
+	if (dstsize > 0)
+	{
+		while (src[i] && i < (dstsize - 1))
+		{
+			dst[i] = src[i];
+			i++;
+		}
+		dst[i] = '\0';
+	}
+	return (len_src);
+}
+
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char	*s2;
@@ -72,6 +95,36 @@ size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 	return (len_src + len_dst);
 }
 
+void ft_get_next_line(char *buffer, size_t *j, char	*chr,size_t *repeat,size_t *index_found, char **rest, size_t *i,char **line )
+{
+	if (buffer[0] == '\0')
+			return (0); //überarbeitbar
+			//EOF
+		if (*j == -1)
+			return (-1);
+		else if (*j > 0)
+		{
+			buffer[*j] = '\0';
+			chr = strchr(buffer, '\n');
+			printf("chr: %s\n j: %i\n,buffer: %s\n, i: %i\n", chr, (int) *j, buffer, (int) *i);
+
+			if (chr != NULL)
+			{
+				*repeat = 0;
+				*index_found = chr - buffer;
+				*rest = ft_substr(buffer, *index_found + 1, BUFFER_SIZE - *index_found + 1);
+				printf("buffer: %s, rest: %s, index_found: %i, BUFFER_SIZE - index_found + 1: %i \n", buffer, *rest, *index_found, BUFFER_SIZE - *index_found + 1);
+			}
+			else
+				*index_found = BUFFER_SIZE;			
+			
+
+			ft_strlcat(*line, buffer,  *i + *index_found + 1);
+			printf("i+index+1: %i,line: %s\n", *i + *index_found + 1, *line);
+			*i += *index_found;
+		}
+}
+
 int get_next_line(int fd, char **line)
 {
 	char buffer[BUFFER_SIZE + 1];
@@ -91,8 +144,12 @@ int get_next_line(int fd, char **line)
 	if(rest != NULL)
 	{
 		//printf("if, %s, len: %i \n", chr, strlen(chr) + strlen(*line) + 1);
-		ft_strlcat(*line, rest, strlen(rest) + strlen(*line) + 1);
-		printf("Resteverwertung:i:%i, len: %i\n", i, strlen(rest));
+		 ft_strlcat(*line, rest, strlen(rest) + strlen(*line) + 1);
+		// ft_strlcpy(buffer, rest, strlen(rest));
+		// printf("Resteverwertung:i:%i, len: %i\n", i, strlen(rest));
+		// rest = NULL;
+		// ft_get_next_line(buffer, &j, chr, &repeat, &index_found, &rest, &i, line);
+
 		i += strlen(rest);
 		
 		//nicht einfach hinzufuegen, da koennte auch ein \n drin sein
@@ -103,39 +160,40 @@ int get_next_line(int fd, char **line)
 	while(repeat && j == BUFFER_SIZE)
 	{
 		j = read(fd, &buffer, BUFFER_SIZE);
-		if (buffer[0] == '\0')
-			return (0); //überarbeitbar
-			//EOF
-		if (j == -1)
-			return (-1);
-		else if (j > 0)
-		{
-			buffer[j] = '\0';
-			chr = strchr(buffer, '\n');
-			printf("chr: %s\n j: %i\n,buffer: %s\n, i: %i\n", chr, (int) j, buffer, (int) i);
+		ft_get_next_line(buffer, &j, chr, &repeat, &index_found, &rest, &i, line);
+		// if (buffer[0] == '\0')
+		// 	return (0); //überarbeitbar
+		// 	//EOF
+		// if (j == -1)
+		// 	return (-1);
+		// else if (j > 0)
+		// {
+		// 	buffer[j] = '\0';
+		// 	chr = strchr(buffer, '\n');
+		// 	printf("chr: %s\n j: %i\n,buffer: %s\n, i: %i\n", chr, (int) j, buffer, (int) i);
 
-			if (chr != NULL)
-			{
-				repeat = 0;
-				index_found = chr - buffer;
-				rest = ft_substr(buffer, index_found + 1, BUFFER_SIZE - index_found + 1);
-				printf("buffer: %s, rest: %s, index_found: %i, BUFFER_SIZE - index_found + 1: %i \n", buffer, rest, index_found, BUFFER_SIZE - index_found + 1);
-			}
-			else
-				index_found = BUFFER_SIZE;			
+		// 	if (chr != NULL)
+		// 	{
+		// 		repeat = 0;
+		// 		index_found = chr - buffer;
+		// 		rest = ft_substr(buffer, index_found + 1, BUFFER_SIZE - index_found + 1);
+		// 		printf("buffer: %s, rest: %s, index_found: %i, BUFFER_SIZE - index_found + 1: %i \n", buffer, rest, index_found, BUFFER_SIZE - index_found + 1);
+		// 	}
+		// 	else
+		// 		index_found = BUFFER_SIZE;			
 			
 
-			ft_strlcat(*line, buffer,  i + index_found + 1);
-			printf("i+index+1: %i,line: %s\n", i + index_found + 1, *line);
-			i += index_found;
-		}
+		// 	ft_strlcat(*line, buffer,  i + index_found + 1);
+		// 	printf("i+index+1: %i,line: %s\n", i + index_found + 1, *line);
+		// 	i += index_found;
+		// }
 		
 	}
 	
 	//*line[i] = '\0';
 	
 	//printf("i: %i\n", (int) i);
-	printf("read: %s\n",*line);
+	printf("read: %s, rest: %s\n",*line, rest);
 }
 
 int main(void) {

@@ -6,7 +6,7 @@
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 10:44:54 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/01 17:39:26 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/07/02 10:50:08 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ int get_next_line(int fd, char **line)
 	j = BUFFER_SIZE;
 	repeat = 1;
 	
+	if(fd < 0 || BUFFER_SIZE <= 0 || (!line))
+		return (-1);
 	printf("\n\n\n\n\nFunktion wird ausgeführt\n");
 	if(chr != NULL)
 	{
@@ -98,9 +100,14 @@ int get_next_line(int fd, char **line)
 	{
 		j = read(fd, &buffer, BUFFER_SIZE);
 		printf("%i, %i", BUFFER_SIZE, j);
-		if (j > 0)
+		if (buffer[0] == '\0')
+			return (0);
+			//EOF
+		if (j == -1)
+			return (-1);
+		else if (j > 0)
 		{
-			buffer[BUFFER_SIZE] = '\0';
+			buffer[j] = '\0';
 			chr = strchr(buffer, '\n');
 			printf("p: %s\n j: %i\n,buffer: %s\n, i: %i\n", chr, (int) j, buffer, (int) i);
 
@@ -108,17 +115,15 @@ int get_next_line(int fd, char **line)
 			{
 				repeat = 0;
 				index_found = chr - buffer;
-				if(j < BUFFER_SIZE)
-				{
-					chr = ft_substr(buffer, index_found + 1, BUFFER_SIZE - index_found + 2);
-					return 0;
-				}
-				else
-					chr = ft_substr(buffer, index_found + 1, BUFFER_SIZE - index_found + 2);
-				//printf("if erreicht\n");
+				
 			}
 			else
 				index_found = BUFFER_SIZE;
+
+			printf("if wid ausgefuehrt\n");
+			chr = ft_substr(buffer, index_found + 1, BUFFER_SIZE - index_found + 1);
+			printf("buffer: %s, chr: %s, index_found: %i, BUFFER_SIZE - index_found + 1: %i \n", buffer, chr, index_found, BUFFER_SIZE - index_found + 1);
+
 			ft_strlcat(*line, buffer,  i + index_found + 1);
 			//printf("i: %i,line: %s\n", i + index_found, *line);
 			i += j;

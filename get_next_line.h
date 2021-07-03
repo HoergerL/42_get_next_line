@@ -11,5 +11,6 @@ int	ft_strlcpy(char *dst, const char *src, int dstsize);
 char	*ft_substr(char const *s, int start, int len);
 int	ft_strlcat(char *dst, const char *src, int dstsize);
 int get_next_line(int fd, char **line);
+int	ft_strlen(const char *s);
 
 #endif

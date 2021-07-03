@@ -1,5 +1,6 @@
 #include "get_next_line.h"
 
+
 int	ft_strlen(const char *s)
 {
 	int	cnt;
@@ -42,12 +43,23 @@ char	*ft_substr(char const *s, int start, int len)
 
 	if (!s)
 		return (0);
+    if (len == 0)
+	{
+        s2 = calloc(1, 1);
+		s2[0] = '\0';
+		return (s2);
+	}
+     write(1,"vor if", 6);
+     //printf("s: %s, start: %i", s, start);
 	len_substr = strlen(&s[start]);
+    write(1,"nach if", 6);
 	if (len_substr > len)
 		len_substr = len;
-	s2 = malloc(sizeof(char) * len + 1);
+	s2 = calloc(len + 1, 1);
+   
 	if (len == 0 || start >= ft_strlen(s))
 	{
+       
 		s2[0] = '\0';
 		return (s2);
 	}

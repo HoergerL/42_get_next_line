@@ -95,7 +95,7 @@ size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 	return (len_src + len_dst);
 }
 
-void ft_get_next_line(char *buffer, size_t *j,size_t *repeat, char **rest,char **line )
+int ft_get_next_line(char *buffer, size_t *j,size_t *repeat, char **rest,char **line )
 {
 	char	*chr = NULL;
 	size_t index_found;
@@ -108,21 +108,21 @@ void ft_get_next_line(char *buffer, size_t *j,size_t *repeat, char **rest,char *
 		{
 			buffer[*j] = '\0';
 			chr = strchr(buffer, '\n');
-			printf("chr: %s\n j: %i\n,buffer: %s\n, len line: %i\n", chr, (int) *j, buffer, strlen(line));
+			//printf("chr: %s\n j: %i\n,buffer: %s\n, len line: %i\n", chr, (int) *j, buffer, strlen(*line));
 
 			if (chr != NULL)
 			{
 				*repeat = 0;
 				index_found = chr - buffer;
 				*rest = ft_substr(buffer, index_found + 1, BUFFER_SIZE - index_found + 1);
-				printf("buffer: %s, rest: %s, index_found: %i, BUFFER_SIZE - index_found + 1: %i \n", buffer, *rest, index_found, BUFFER_SIZE - index_found + 1);
+				//printf("buffer: %s, rest: %s, index_found: %i, BUFFER_SIZE - index_found + 1: %i \n", buffer, *rest, index_found, BUFFER_SIZE - index_found + 1);
 			}
 			else
 				index_found = BUFFER_SIZE;			
 			
 
 			ft_strlcat(*line, buffer,  strlen(*line) + index_found + 1);
-			printf("i+index+1: %i,line: %s\n", strlen(line) + index_found + 1, *line);
+			//printf("i+index+1: %i,line: %s\n", strlen(*line) + index_found + 1, *line);
 			//*i += *index_found;
 		}
 }
@@ -140,15 +140,16 @@ int get_next_line(int fd, char **line)
 	
 	if(fd < 0 || BUFFER_SIZE <= 0 || (!line))
 		return (-1);
-	printf("\n\n\n\n\nFunktion wird ausgeführt\n");
-	if(rest != NULL)
+	//printf("\n\n\n\n\nFunktion wird ausgeführt\n");
+	//printf("rest: %s\n", rest);
+	if(rest != NULL && rest[0] != 0)
 	{
 		//printf("if, %s, len: %i \n", chr, strlen(chr) + strlen(*line) + 1);
-		 ft_strlcat(*line, rest, strlen(rest) + strlen(*line) + 1);
-		// ft_strlcpy(buffer, rest, strlen(rest));
-		// printf("Resteverwertung:i:%i, len: %i\n", i, strlen(rest));
+		 //ft_strlcat(*line, rest, strlen(rest) + strlen(*line) + 1);
+		 ft_strlcpy(buffer, rest, strlen(rest) + 1);
+		 //printf("Resteverwertung: len: %i, buffer: %s\n", strlen(rest), buffer);
 		// rest = NULL;
-		// ft_get_next_line(buffer, &j, chr, &repeat, &index_found, &rest, &i, line);
+		 ft_get_next_line(buffer, &j, &repeat, &rest, line);
 
 		//i += strlen(rest);
 		
@@ -161,32 +162,7 @@ int get_next_line(int fd, char **line)
 	{
 		j = read(fd, &buffer, BUFFER_SIZE);
 		ft_get_next_line(buffer, &j, &repeat, &rest, line);
-		// if (buffer[0] == '\0')
-		// 	return (0); //überarbeitbar
-		// 	//EOF
-		// if (j == -1)
-		// 	return (-1);
-		// else if (j > 0)
-		// {
-		// 	buffer[j] = '\0';
-		// 	chr = strchr(buffer, '\n');
-		// 	printf("chr: %s\n j: %i\n,buffer: %s\n, i: %i\n", chr, (int) j, buffer, (int) i);
-
-		// 	if (chr != NULL)
-		// 	{
-		// 		repeat = 0;
-		// 		index_found = chr - buffer;
-		// 		rest = ft_substr(buffer, index_found + 1, BUFFER_SIZE - index_found + 1);
-		// 		printf("buffer: %s, rest: %s, index_found: %i, BUFFER_SIZE - index_found + 1: %i \n", buffer, rest, index_found, BUFFER_SIZE - index_found + 1);
-		// 	}
-		// 	else
-		// 		index_found = BUFFER_SIZE;			
-			
-
-		// 	ft_strlcat(*line, buffer,  i + index_found + 1);
-		// 	printf("i+index+1: %i,line: %s\n", i + index_found + 1, *line);
-		// 	i += index_found;
-		// }
+		
 		
 	}
 	

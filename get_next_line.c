@@ -95,8 +95,10 @@ size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 	return (len_src + len_dst);
 }
 
-void ft_get_next_line(char *buffer, size_t *j, char	*chr,size_t *repeat,size_t *index_found, char **rest, size_t *i,char **line )
+void ft_get_next_line(char *buffer, size_t *j,size_t *repeat, char **rest,char **line )
 {
+	char	*chr = NULL;
+	size_t index_found;
 	if (buffer[0] == '\0')
 			return (0); //überarbeitbar
 			//EOF
@@ -106,32 +108,30 @@ void ft_get_next_line(char *buffer, size_t *j, char	*chr,size_t *repeat,size_t *
 		{
 			buffer[*j] = '\0';
 			chr = strchr(buffer, '\n');
-			printf("chr: %s\n j: %i\n,buffer: %s\n, i: %i\n", chr, (int) *j, buffer, (int) *i);
+			printf("chr: %s\n j: %i\n,buffer: %s\n, len line: %i\n", chr, (int) *j, buffer, strlen(line));
 
 			if (chr != NULL)
 			{
 				*repeat = 0;
-				*index_found = chr - buffer;
-				*rest = ft_substr(buffer, *index_found + 1, BUFFER_SIZE - *index_found + 1);
-				printf("buffer: %s, rest: %s, index_found: %i, BUFFER_SIZE - index_found + 1: %i \n", buffer, *rest, *index_found, BUFFER_SIZE - *index_found + 1);
+				index_found = chr - buffer;
+				*rest = ft_substr(buffer, index_found + 1, BUFFER_SIZE - index_found + 1);
+				printf("buffer: %s, rest: %s, index_found: %i, BUFFER_SIZE - index_found + 1: %i \n", buffer, *rest, index_found, BUFFER_SIZE - index_found + 1);
 			}
 			else
-				*index_found = BUFFER_SIZE;			
+				index_found = BUFFER_SIZE;			
 			
 
-			ft_strlcat(*line, buffer,  *i + *index_found + 1);
-			printf("i+index+1: %i,line: %s\n", *i + *index_found + 1, *line);
-			*i += *index_found;
+			ft_strlcat(*line, buffer,  strlen(*line) + index_found + 1);
+			printf("i+index+1: %i,line: %s\n", strlen(line) + index_found + 1, *line);
+			//*i += *index_found;
 		}
 }
 
 int get_next_line(int fd, char **line)
 {
 	char buffer[BUFFER_SIZE + 1];
-	static char	*chr = NULL;
 	static char	*rest = NULL;
-	static size_t i = 0;
-	size_t index_found;
+	//static size_t i = 0;
 	size_t repeat;
 	size_t j;
 
@@ -150,7 +150,7 @@ int get_next_line(int fd, char **line)
 		// rest = NULL;
 		// ft_get_next_line(buffer, &j, chr, &repeat, &index_found, &rest, &i, line);
 
-		i += strlen(rest);
+		//i += strlen(rest);
 		
 		//nicht einfach hinzufuegen, da koennte auch ein \n drin sein
 		//printf("line: %s\n", *line);
@@ -160,7 +160,7 @@ int get_next_line(int fd, char **line)
 	while(repeat && j == BUFFER_SIZE)
 	{
 		j = read(fd, &buffer, BUFFER_SIZE);
-		ft_get_next_line(buffer, &j, chr, &repeat, &index_found, &rest, &i, line);
+		ft_get_next_line(buffer, &j, &repeat, &rest, line);
 		// if (buffer[0] == '\0')
 		// 	return (0); //überarbeitbar
 		// 	//EOF

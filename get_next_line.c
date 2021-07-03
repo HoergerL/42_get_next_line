@@ -95,36 +95,44 @@ size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 	return (len_src + len_dst);
 }
 
-int ft_get_next_line(char *buffer, size_t *j,size_t *repeat, char **rest,char **line )
+int ft_get_next_line(char *buffer, size_t *j, char **rest,char **line )
 {
 	char	*chr = NULL;
 	size_t index_found;
+	size_t status;
+
+	status = 2;
 	if (buffer[0] == '\0')
-			return (0); //überarbeitbar
+		return (0); //überarbeitbar
 			//EOF
-		if (*j == -1)
-			return (-1);
-		else if (*j > 0)
+	if (*j == -1)
+		return (-1);
+	if (*j == 0)
+		return (0);
+	else if (*j > 0)
+	{
+		buffer[*j] = '\0';
+		chr = strchr(buffer, '\n');
+		printf("chr: %s\n j: %i\n,buffer: %s\n, len line: %i\n", chr, (int) *j, buffer, strlen(*line));
+
+		if (chr != NULL)
 		{
-			buffer[*j] = '\0';
-			chr = strchr(buffer, '\n');
-			//printf("chr: %s\n j: %i\n,buffer: %s\n, len line: %i\n", chr, (int) *j, buffer, strlen(*line));
-
-			if (chr != NULL)
-			{
-				*repeat = 0;
-				index_found = chr - buffer;
-				*rest = ft_substr(buffer, index_found + 1, BUFFER_SIZE - index_found + 1);
-				//printf("buffer: %s, rest: %s, index_found: %i, BUFFER_SIZE - index_found + 1: %i \n", buffer, *rest, index_found, BUFFER_SIZE - index_found + 1);
-			}
-			else
-				index_found = BUFFER_SIZE;			
-			
-
-			ft_strlcat(*line, buffer,  strlen(*line) + index_found + 1);
-			//printf("i+index+1: %i,line: %s\n", strlen(*line) + index_found + 1, *line);
-			//*i += *index_found;
+			status = 1;
+			index_found = chr - buffer;
+			*rest = ft_substr(buffer, index_found + 1, BUFFER_SIZE - index_found + 1);
+			//printf("buffer: %s, rest: %s, index_found: %i, BUFFER_SIZE - index_found + 1: %i \n", buffer, *rest, index_found, BUFFER_SIZE - index_found + 1);
 		}
+		else if (*j < BUFFER_SIZE)
+			return (0);
+		else
+			index_found = BUFFER_SIZE;			
+		
+
+		ft_strlcat(*line, buffer,  strlen(*line) + index_found + 1);
+		//printf("i+index+1: %i,line: %s\n", strlen(*line) + index_found + 1, *line);
+		//*i += *index_found;
+	}
+	return (status);
 }
 
 int get_next_line(int fd, char **line)
@@ -132,12 +140,13 @@ int get_next_line(int fd, char **line)
 	char buffer[BUFFER_SIZE + 1];
 	static char	*rest = NULL;
 	//static size_t i = 0;
-	size_t repeat;
+	size_t status;
 	size_t j;
 
 	j = BUFFER_SIZE;
-	repeat = 1;
-	
+	status = 2;	
+	//status = 2 -> repeat
+	//status 1 = line has been read
 	if(fd < 0 || BUFFER_SIZE <= 0 || (!line))
 		return (-1);
 	//printf("\n\n\n\n\nFunktion wird ausgeführt\n");
@@ -149,7 +158,7 @@ int get_next_line(int fd, char **line)
 		 ft_strlcpy(buffer, rest, strlen(rest) + 1);
 		 //printf("Resteverwertung: len: %i, buffer: %s\n", strlen(rest), buffer);
 		// rest = NULL;
-		 ft_get_next_line(buffer, &j, &repeat, &rest, line);
+		 ft_get_next_line(buffer, &j, &rest, line);
 
 		//i += strlen(rest);
 		
@@ -158,27 +167,26 @@ int get_next_line(int fd, char **line)
 	}
 	
 	//i = 0;
-	while(repeat && j == BUFFER_SIZE)
+	while(status == 2 && j == BUFFER_SIZE)
 	{
 		j = read(fd, &buffer, BUFFER_SIZE);
-		ft_get_next_line(buffer, &j, &repeat, &rest, line);
-		
-		
+		status = ft_get_next_line(buffer, &j, &rest, line);
 	}
 	
 	//*line[i] = '\0';
 	
 	//printf("i: %i\n", (int) i);
 	printf("read: %s, rest: %s\n",*line, rest);
+	return status;
 }
 
 int main(void) {
 	char *puffer = malloc(100);
 	char **ptr = &puffer;
 	int f = open("text.txt", O_RDONLY);
-	get_next_line(f, ptr);
-	get_next_line(f, ptr);
-	get_next_line(f, ptr);
+	printf("return: %i\n", get_next_line(f, ptr));
+printf("return: %i\n", get_next_line(f, ptr));
+printf("return: %i\n", get_next_line(f, ptr));
 	//get_next_line(f, ptr);
 	close(f);
 	return 1;

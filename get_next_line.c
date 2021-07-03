@@ -108,12 +108,17 @@ int ft_get_next_line(char *buffer, size_t *j, char **rest,char **line )
 	if (*j == -1)
 		return (-1);
 	if (*j == 0)
+	{
+		//printf("j = 0\n");
 		return (0);
+
+	}
+
 	else if (*j > 0)
 	{
 		buffer[*j] = '\0';
 		chr = strchr(buffer, '\n');
-		printf("chr: %s\n j: %i\n,buffer: %s\n, len line: %i\n", chr, (int) *j, buffer, strlen(*line));
+		//printf("chr: %s\n j: %i\n,buffer: %s\n, len line: %i\n", chr, (int) *j, buffer, strlen(*line));
 
 		if (chr != NULL)
 		{
@@ -129,8 +134,7 @@ int ft_get_next_line(char *buffer, size_t *j, char **rest,char **line )
 		
 
 		ft_strlcat(*line, buffer,  strlen(*line) + index_found + 1);
-		//printf("i+index+1: %i,line: %s\n", strlen(*line) + index_found + 1, *line);
-		//*i += *index_found;
+		//printf("i+index+1: %i,line: %s, status: %i\n", strlen(*line) + index_found + 1, *line, (int)status );
 	}
 	return (status);
 }
@@ -149,7 +153,7 @@ int get_next_line(int fd, char **line)
 	//status 1 = line has been read
 	if(fd < 0 || BUFFER_SIZE <= 0 || (!line))
 		return (-1);
-	//printf("\n\n\n\n\nFunktion wird ausgeführt\n");
+	printf("\n\n\n\n\nFunktion wird ausgeführt\n");
 	//printf("rest: %s\n", rest);
 	if(rest != NULL && rest[0] != 0)
 	{
@@ -158,7 +162,8 @@ int get_next_line(int fd, char **line)
 		 ft_strlcpy(buffer, rest, strlen(rest) + 1);
 		 //printf("Resteverwertung: len: %i, buffer: %s\n", strlen(rest), buffer);
 		// rest = NULL;
-		 ft_get_next_line(buffer, &j, &rest, line);
+		 status = ft_get_next_line(buffer, &j, &rest, line);
+		 //printf("JA ES IST DAS\n");
 
 		//i += strlen(rest);
 		
@@ -171,12 +176,13 @@ int get_next_line(int fd, char **line)
 	{
 		j = read(fd, &buffer, BUFFER_SIZE);
 		status = ft_get_next_line(buffer, &j, &rest, line);
+		//printf("status in while: %i\n", (int) status);
 	}
 	
 	//*line[i] = '\0';
 	
 	//printf("i: %i\n", (int) i);
-	printf("read: %s, rest: %s\n",*line, rest);
+	printf("read: line:%s, rest: %s\n",*line, rest);
 	return status;
 }
 
@@ -185,8 +191,8 @@ int main(void) {
 	char **ptr = &puffer;
 	int f = open("text.txt", O_RDONLY);
 	printf("return: %i\n", get_next_line(f, ptr));
-printf("return: %i\n", get_next_line(f, ptr));
-printf("return: %i\n", get_next_line(f, ptr));
+	printf("return: %i\n", get_next_line(f, ptr));
+	printf("return: %i\n", get_next_line(f, ptr));
 	//get_next_line(f, ptr);
 	close(f);
 	return 1;

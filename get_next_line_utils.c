@@ -49,10 +49,10 @@ char	*ft_substr(char const *s, int start, int len)
 		s2[0] = '\0';
 		return (s2);
 	}
-     write(1,"vor if", 6);
+     //write(1,"vor if", 6);
      //printf("s: %s, start: %i", s, start);
 	len_substr = strlen(&s[start]);
-    write(1,"nach if", 6);
+    //write(1,"nach if", 6);
 	if (len_substr > len)
 		len_substr = len;
 	s2 = calloc(len + 1, 1);

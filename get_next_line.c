@@ -52,12 +52,11 @@ char	*ft_strjoin(char const *s1, char const *s2)
 char	*ft_strdup(const char *s1)
 {
 	char	*s2;
-	size_t	len;
+	int		len;
 
-//write(1, "strdup", 5);
 	len = ft_strlen(s1);
-	
-	s2 = calloc(len + 1, 1);
+	//printf("len: %i\n", len);
+	s2 = calloc(len + 1, sizeof(char));
 	if (!s2)
 		return (0);
 	
@@ -117,18 +116,28 @@ int ft_get_next_line(char *buffer, int *j, char **rest,char **line )
 		char* s;
 		char* new_line;
 		s = ft_substr(buffer, 0, index_found);
+		if(!(*buffer)) // ADDED
+			return (-1); // ADDED
+		// printf("s: %p\n", s);
 		//write(1, "nach s an\n", 10);
 		if((*line))
 			new_line = ft_strjoin(*line, s);
 		else 
 			new_line = ft_strdup(s);
-		free(*line);
+		// printf("new_line: %p\n", new_line);
+		//free(*line);
+		free(s);
+		s = NULL;
+		//free(*line); // because line gets overwritten with dynamic memory in the next line
+		//*line = NULL; // But, because *line might be empty we first check its content
+		if (*line)   // WORKS
+		 	free(*line); /// WORKS
 		*line = ft_strdup(new_line);
+		// printf("line: %p\n", *line);
 		//write(1, "unten\n", 7);
 		free(new_line);
 		new_line = NULL;
-		free(s);
-		s = NULL;
+		
 		
 		//ft_strlcat(*line, buffer,  ft_strlen(*line) + index_found + 1);
 		//printf("len line: %i, index_found: %i\n", ft_strlen(*line), index_found);
@@ -184,7 +193,8 @@ int get_next_line(int fd, char **line)
 	//*line[i] = '\0';
 	
 	////printf("i: %i\n", (int) i);
-	//printf("read: line:%s, rest: %s\n",*line, rest);
+	
+	//printf("#####################read: line:%s, rest: %s\n",*line, rest);
 	return status;
 }
 
@@ -192,11 +202,15 @@ int get_next_line(int fd, char **line)
 // 	char *puffer = malloc(100);
 // 	char *ptr = puffer;
 // 	int f = open("text.txt", O_RDONLY);
-// 	//printf("return: %i\n", get_next_line(f, &ptr));
-// 	//printf("return: %i\n", get_next_line(f, &ptr));
-// 	//printf("return: %i\n", get_next_line(f, &ptr));
+// 	// printf("return: %i\n", get_next_line(f, &ptr));
+// 	get_next_line(f, &ptr);
+// 	printf("1. %s\n", ptr);
+// 	get_next_line(f, &ptr);
+// 	printf("2. %s\n", ptr);
+// 	get_next_line(f, &ptr);
+// 	printf("3. %s\n", ptr);
 // 	//printf("EXTRA return: %i\n", get_next_line(f, &ptr));
-// 	//printf("EXTRA return: %i\n", get_next_line(f, &ptr));
+// 	free(puffer);
 // 	close(f);
 // 	return 1;
 // }

@@ -6,7 +6,7 @@
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 10:44:54 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/08 13:45:56 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/07/14 17:48:15 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,9 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-char	*ft_strjoin(char const *s1, char const *s2)
+//Achtung calloc
+
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*s3;
 	size_t	len;
@@ -32,19 +34,25 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		return (0);
 	ft_strlcpy(s3, s1, ft_strlen(s1) + 1);
 	ft_strlcat(s3, s2, len);
+	free(s1);
+	s1 = NULL;
+	//free(s2);
+	//s2 = NULL;
 	return (s3);
 }
 
-char	*ft_strdup(const char *s1)
+char	*ft_strdup(char **s1)
 {
 	char	*s2;
 	int		len;
 
-	len = ft_strlen(s1);
+	len = ft_strlen(*s1);
 	s2 = calloc(len + 1, sizeof(char));
 	if (!s2)
 		return (0);
-	ft_strlcpy((char *) s2, s1, len + 1);
+	ft_strlcpy((char *) s2, *s1, len + 1);
+	free(*s1);
+	s1 = NULL;
 	return (s2);
 }
 
@@ -54,19 +62,12 @@ int	ft_get_next_line(char *buffer, int *j, char **rest, char **line)
 	int		found;
 	int		status;
 	char	*s;
-	char	*new_line;
 
 	chr = NULL;
 	found = BUFFER_SIZE;
 	status = 2;
-	if (*j == -1)
-		return (-1);
-	if (*j == 0)
-	{
-		if (!line)
-			return (-1);
+	if (*j == 0  || *j == -1)
 		return (0);
-	}
 	else if (*j > 0)
 	{
 		buffer[*j] = '\0';
@@ -76,27 +77,16 @@ int	ft_get_next_line(char *buffer, int *j, char **rest, char **line)
 			status = 1;
 			found = chr - buffer + 1;
 			*rest = ft_substr(buffer, found + 1, BUFFER_SIZE - found + 1);
-			if (!(*rest))
-				return (-1);
 		}
 		else if (*j < BUFFER_SIZE)
 			status = 0;
 		else
 			found = BUFFER_SIZE;
 		s = ft_substr(buffer, 0, found);
-		if (!(*buffer))
-			return (-1);
 		if ((*line))
-			new_line = ft_strjoin(*line, s);
+			*line = ft_strjoin(*line, s);
 		else
-			new_line = ft_strdup(s);
-		free(s);
-		s = NULL;
-		if (*line)
-			free(*line);
-		*line = ft_strdup(new_line);
-		free(new_line);
-		new_line = NULL;
+			*line = ft_strdup(&s);
 	}
 	return (status);
 }
@@ -129,10 +119,14 @@ char	*get_next_line(int fd)
 		j = read(fd, buffer, BUFFER_SIZE);
 		status = ft_get_next_line(buffer, &j, &rest, &line);
 		if (status != 2 && line == NULL)
+		{
+			free(buffer);
+			buffer = NULL;
 			return (NULL);
+		}
 	}
 	free(buffer);
-	//buffer = NULL;
+	buffer = NULL;
 	return (line);
 }
 

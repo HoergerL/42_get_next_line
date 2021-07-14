@@ -6,7 +6,7 @@
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 10:44:54 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/14 17:48:15 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/07/14 18:37:34 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,33 @@ char	*ft_strjoin(char *s1, char *s2)
 	//free(s2);
 	//s2 = NULL;
 	return (s3);
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	char    *s_join;
+	int     len_s1;
+	int     len_s2;
+	int     i;
+	int     j;
+	if (s1 == 0 || s2 == 0)
+		return (0);
+	len_s1 = ft_strlen(s1);
+	len_s2 = ft_strlen(s2);
+	s_join = (char *)malloc(sizeof(*s1) * (len_s1 + len_s2) + 1);
+	if (s_join == NULL)
+		return (NULL);
+	i = 0;
+	while (s1[i] != '\0')
+	{
+		s_join[i] = s1[i];
+		i++;
+	}
+	j = 0;
+	while (s2[j] != '\0')
+		s_join[i++] = s2[j++];
+	s_join[i] = '\0';
+	return (s_join);
 }
 
 char	*ft_strdup(char **s1)

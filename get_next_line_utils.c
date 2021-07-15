@@ -6,7 +6,7 @@
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/08 07:57:56 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/15 10:29:48 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/07/15 10:47:21 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ int	ft_strlcpy(char *dst, const char *src, int dstsize)
 	return (len_src);
 }
 // TODO: Remove memcpy and calloc
+
 char	*ft_substr(char const *s, int start, int len)
 {
 	char	*s2;
@@ -62,7 +63,7 @@ char	*ft_substr(char const *s, int start, int len)
 		s2[0] = '\0';
 		return (s2);
 	}
-	if (len == 0 || start > ft_strlen(s))
+	if (len == 0 || start >= ft_strlen(s))
 	{
 		s2 = calloc(1, 1);
 		s2[0] = '\0';

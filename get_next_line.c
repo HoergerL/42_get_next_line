@@ -6,7 +6,7 @@
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 10:44:54 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/15 10:30:43 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/07/15 10:46:15 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ int	ft_get_next_line(char *buffer, int *j, char **rest, char **line)
 		{
 			status = 1;
 			found = chr - buffer + 1;
-			*rest = ft_substr(buffer, found + 1, BUFFER_SIZE - found + 1);
+			*rest = ft_substr(buffer, found , BUFFER_SIZE - found + 1);
 			//printf("rest: %s, found + 1: %i, BUFFER_SIZE - found + 1: %i\n", *rest, found + 1, BUFFER_SIZE - found + 1);
 		}
 		else if (*j < BUFFER_SIZE)
@@ -179,7 +179,7 @@ char	*get_next_line(int fd)
 //	{
 //		line = get_next_line(fd);
 //		printf("line: %s", line);
-//		//free(line);
+//		free(line);
 //		i++;
 //	}
 //}

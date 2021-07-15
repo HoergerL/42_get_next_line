@@ -6,7 +6,7 @@
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 10:44:54 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/15 15:12:26 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/07/15 16:28:11 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ char	*ft_strjoin(char *s1, char *s2)
 	s_join[i] = '\0';
 	free(s1);
 	s1 = NULL;
+	free(s2);
+	s2 = NULL;
 	return (s_join);
 }
 
@@ -58,6 +60,8 @@ char	*ft_strdup(char **s1)
 	if (!s2)
 		return (0);
 	ft_memcpy((char *) s2, *s1, len + 1);
+	free(*s1);
+	*s1 = NULL;
 	return (s2);
 }
 
@@ -87,11 +91,25 @@ int	ft_get_next_line(char *buffer, int *j, char **rest, char **line)
 		*line = ft_strjoin(*line, s);
 	else
 		*line = ft_strdup(&s);
-	free(s);
-	s = NULL;
 	return (fndxstate[1]);
 }
-
+//int dothething(char **buffer, int *j, char **rest, char **line)
+//{
+//	int status;
+	
+//	*line = NULL;
+//	*buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+//	if ((!(*buffer)))
+//		return (0);
+//	if (*rest != NULL && (*rest)[0] != 0)
+//	{
+//		 ft_memcpy(*buffer, *rest, ft_strlen(*rest) + 1);
+//		 free(*rest);
+//		 *rest = NULL;
+//		 return (ft_get_next_line(*buffer, j, &rest, &line));
+//	}
+//	return 2;
+//}
 char	*get_next_line(int fd)
 {
 	char		*buffer;
@@ -127,28 +145,25 @@ char	*get_next_line(int fd)
 		}
 	}
 	if (rest && status == 0)
-	{
 		free(rest);
-		rest = NULL;
-	}
 	free(buffer);
 	buffer = NULL;
 	return (line);
 }
 
-int	main(void)
-{
-	int		fd;
-	int		i;
+//int	main(void)
+//{
+//	int		fd;
+//	int		i;
 
-	i = 0;
-	char *line ="";
-	fd = open("41_with_nl", O_RDONLY);
-	while (line)
-	{
-		line = get_next_line(fd);
-		printf("line: %s", line);
-		free(line);
-		i++;
-	}
-}
+//	i = 0;
+//	char *line ="";
+//	fd = open("41_with_nl", O_RDONLY);
+//	while (line)
+//	{
+//		line = get_next_line(fd);
+//		printf("line: %s", line);
+//		free(line);
+//		i++;
+//	}
+//}

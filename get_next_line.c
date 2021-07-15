@@ -6,7 +6,7 @@
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 10:44:54 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/14 18:37:34 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/07/15 09:29:36 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,27 +21,27 @@
 
 //Achtung calloc
 
+//char	*ft_strjoin(char *s1, char *s2)
+//{
+//	char	*s3;
+//	size_t	len;
+
+//	if (!s1 || !s2)
+//		return (0);
+//	len = ft_strlen(s1) + ft_strlen(s2) + 1;
+//	s3 = malloc(sizeof(char) * len);
+//	if (!s3)
+//		return (0);
+//	ft_strlcpy(s3, s1, ft_strlen(s1) + 1);
+//	ft_strlcat(s3, s2, len);
+//	free(s1);
+//	s1 = NULL;
+//	//free(s2);
+//	//s2 = NULL;
+//	return (s3);
+//}
+
 char	*ft_strjoin(char *s1, char *s2)
-{
-	char	*s3;
-	size_t	len;
-
-	if (!s1 || !s2)
-		return (0);
-	len = ft_strlen(s1) + ft_strlen(s2) + 1;
-	s3 = malloc(sizeof(char) * len);
-	if (!s3)
-		return (0);
-	ft_strlcpy(s3, s1, ft_strlen(s1) + 1);
-	ft_strlcat(s3, s2, len);
-	free(s1);
-	s1 = NULL;
-	//free(s2);
-	//s2 = NULL;
-	return (s3);
-}
-
-char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char    *s_join;
 	int     len_s1;
@@ -65,6 +65,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	while (s2[j] != '\0')
 		s_join[i++] = s2[j++];
 	s_join[i] = '\0';
+	free(s1);
+	s1 = NULL;
 	return (s_join);
 }
 
@@ -152,6 +154,11 @@ char	*get_next_line(int fd)
 			return (NULL);
 		}
 	}
+	if (rest && status == 0)
+	{
+		free(rest);
+		rest = NULL;
+	}
 	free(buffer);
 	buffer = NULL;
 	return (line);
@@ -163,10 +170,12 @@ int	main(void)
 	int		i;
 
 	i = 0;
-	fd = open("41_with_nl", O_RDONLY);
+	fd = open("multiple_line_no_nl", O_RDONLY);
 	while (i < 3)
 	{
-		printf("line: %s", get_next_line(fd));
+		char *line = get_next_line(fd);
+		printf("line: %s", line);
+		free(line);
 		i++;
 	}
 }

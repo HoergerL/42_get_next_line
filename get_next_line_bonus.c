@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 10:44:54 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/15 20:31:00 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/07/15 20:38:52 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -125,7 +125,7 @@ int	ft_get_next_line_helper(char *buffer, int fd, char **rest, char **line)
 char	*get_next_line(int fd)
 {
 	char		*buffer;
-	static char	*rest;
+	static char	*rest[4096];
 	char		*line;
 	int			status;
 	
@@ -135,9 +135,9 @@ char	*get_next_line(int fd)
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if ((!buffer))
 		return (NULL);
-	status = ft_get_next_line_helper(buffer, fd, &rest, &line);
-	if (rest && status == 0)
-		free(rest);
+	status = ft_get_next_line_helper(buffer, fd, &rest[fd], &line);
+	if (rest[fd] && status == 0)
+		free(rest[fd]);
 	free(buffer);
 	buffer = NULL;
 	return (line);

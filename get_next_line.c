@@ -6,7 +6,7 @@
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 10:44:54 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/15 16:28:11 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/07/15 16:58:42 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,73 +65,48 @@ char	*ft_strdup(char **s1)
 	return (s2);
 }
 
-int	ft_get_next_line(char *buffer, int *j, char **rest, char **line)
+int	ft_get_next_line(char *buffer, int *j, char ***rest, char ***line)
 {
 	char	*chr;
-	int		fndxstate[2];
+	int		fndxst[2];
 	char	*s;
 
 	chr = NULL;
-	fndxstate[0] = BUFFER_SIZE;
-	fndxstate[1] = 2;
+	fndxst[0] = BUFFER_SIZE;
+	fndxst[1] = 2;
 	if (*j == 0 || *j == -1)
 		return (0);
 	buffer[*j] = '\0';
 	chr = ft_strchr(buffer, '\n');
 	if (chr != NULL)
 	{
-		fndxstate[1] = 1;
-		fndxstate[0] = chr - buffer + 1;
-		*rest = ft_substr(buffer, fndxstate[0], BUFFER_SIZE - fndxstate[1] + 1);
+		fndxst[1] = 1;
+		fndxst[0] = chr - buffer + 1;
+		*(*rest) = ft_substr(buffer, fndxst[0], BUFFER_SIZE - fndxst[1] + 1);
 	}
 	else if (*j < BUFFER_SIZE)
-		fndxstate[1] = 0;
-	s = ft_substr(buffer, 0, fndxstate[0]);
-	if (*line)
-		*line = ft_strjoin(*line, s);
+		fndxst[1] = 0;
+	s = ft_substr(buffer, 0, fndxst[0]);
+	if (*(*line))
+		*(*line) = ft_strjoin(*(*line), s);
 	else
-		*line = ft_strdup(&s);
-	return (fndxstate[1]);
+		*(*line) = ft_strdup(&s);
+	return (fndxst[1]);
 }
-//int dothething(char **buffer, int *j, char **rest, char **line)
-//{
-//	int status;
-	
-//	*line = NULL;
-//	*buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-//	if ((!(*buffer)))
-//		return (0);
-//	if (*rest != NULL && (*rest)[0] != 0)
-//	{
-//		 ft_memcpy(*buffer, *rest, ft_strlen(*rest) + 1);
-//		 free(*rest);
-//		 *rest = NULL;
-//		 return (ft_get_next_line(*buffer, j, &rest, &line));
-//	}
-//	return 2;
-//}
-char	*get_next_line(int fd)
-{
-	char		*buffer;
-	static char	*rest = NULL;
-	char		*line;
-	int			status;
-	int			j;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	j = BUFFER_SIZE;
+int	dothething(char *buffer, int fd, char **rest, char **line)
+{
+	int	status;
+	int	j;
+
 	status = 2;
-	line = NULL;
-	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if ((!buffer))
-		return (NULL);
-	if (rest != NULL && rest[0] != 0)
+	j = BUFFER_SIZE;
+	if (*rest != NULL && (*rest)[0] != 0)
 	{
-		 ft_memcpy(buffer, rest, ft_strlen(rest) + 1);
-		 free(rest);
-		 rest = NULL;
-		 status = ft_get_next_line(buffer, &j, &rest, &line);
+		 ft_memcpy(buffer, *rest, ft_strlen(*rest) + 1);
+		 free(*rest);
+		 *rest = NULL;
+		 status = (ft_get_next_line(buffer, &j, &rest, &line));
 	}
 	while (status == 2 && j == BUFFER_SIZE)
 	{
@@ -141,9 +116,26 @@ char	*get_next_line(int fd)
 		{
 			free(buffer);
 			buffer = NULL;
-			return (NULL);
+			return (0);
 		}
 	}
+	return (status);
+}
+
+char	*get_next_line(int fd)
+{
+	char		*buffer;
+	static char	*rest = NULL;
+	char		*line;
+	int			status;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	line = NULL;
+	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if ((!buffer))
+		return (NULL);
+	status = dothething(buffer, fd, &rest, &line);
 	if (rest && status == 0)
 		free(rest);
 	free(buffer);
@@ -151,19 +143,19 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-//int	main(void)
-//{
-//	int		fd;
-//	int		i;
+int	main(void)
+{
+	int		fd;
+	int		i;
 
-//	i = 0;
-//	char *line ="";
-//	fd = open("41_with_nl", O_RDONLY);
-//	while (line)
-//	{
-//		line = get_next_line(fd);
-//		printf("line: %s", line);
-//		free(line);
-//		i++;
-//	}
-//}
+	i = 0;
+	char *line ="";
+	fd = open("41_with_nl", O_RDONLY);
+	while (line)
+	{
+		line = get_next_line(fd);
+		printf("line: %s", line);
+		free(line);
+		i++;
+	}
+}

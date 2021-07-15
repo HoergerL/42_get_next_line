@@ -6,7 +6,7 @@
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 10:44:54 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/15 09:29:36 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/07/15 10:30:43 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ int	ft_get_next_line(char *buffer, int *j, char **rest, char **line)
 			status = 1;
 			found = chr - buffer + 1;
 			*rest = ft_substr(buffer, found + 1, BUFFER_SIZE - found + 1);
+			//printf("rest: %s, found + 1: %i, BUFFER_SIZE - found + 1: %i\n", *rest, found + 1, BUFFER_SIZE - found + 1);
 		}
 		else if (*j < BUFFER_SIZE)
 			status = 0;
@@ -146,6 +147,7 @@ char	*get_next_line(int fd)
 	while (status == 2 && j == BUFFER_SIZE)
 	{
 		j = read(fd, buffer, BUFFER_SIZE);
+		//printf("buffer: %s\n", buffer);
 		status = ft_get_next_line(buffer, &j, &rest, &line);
 		if (status != 2 && line == NULL)
 		{
@@ -161,21 +163,23 @@ char	*get_next_line(int fd)
 	}
 	free(buffer);
 	buffer = NULL;
+	//printf("rest: %s\n", rest);
 	return (line);
 }
 
-int	main(void)
-{
-	int		fd;
-	int		i;
+//int	main(void)
+//{
+//	int		fd;
+//	int		i;
 
-	i = 0;
-	fd = open("multiple_line_no_nl", O_RDONLY);
-	while (i < 3)
-	{
-		char *line = get_next_line(fd);
-		printf("line: %s", line);
-		free(line);
-		i++;
-	}
-}
+//	i = 0;
+//	char *line ="";
+//	fd = open("41_with_nl", O_RDONLY);
+//	while (line)
+//	{
+//		line = get_next_line(fd);
+//		printf("line: %s", line);
+//		//free(line);
+//		i++;
+//	}
+//}

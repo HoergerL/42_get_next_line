@@ -6,7 +6,7 @@
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/08 07:57:56 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/15 09:23:35 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/07/15 10:29:48 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,13 @@ char	*ft_substr(char const *s, int start, int len)
 		s2[0] = '\0';
 		return (s2);
 	}
-	if (len == 0 || start >= ft_strlen(s))
+	if (len == 0 || start > ft_strlen(s))
 	{
 		s2 = calloc(1, 1);
 		s2[0] = '\0';
 		return (s2);
 	}
-	len_substr = ft_strlen(&s[start]);
+	len_substr = strlen(&s[start]);
 	if (len_substr > len)
 		len_substr = len;
 	s2 = calloc(len + 1, 1);

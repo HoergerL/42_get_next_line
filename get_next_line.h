@@ -15,5 +15,6 @@ char	*get_next_line(int fd);
 char	*ft_strchr(const char *s, int c);
 void	*ft_calloc(size_t count, size_t size);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
+char	*ft_strdup(char **s1);
 
 #endif

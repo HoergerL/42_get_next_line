@@ -6,7 +6,7 @@
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 10:44:54 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/15 12:27:08 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/07/15 15:12:26 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,10 @@ char	*ft_strdup(char **s1)
 	int		len;
 
 	len = ft_strlen(*s1);
-	s2 = calloc(len + 1, sizeof(char));
+	s2 = ft_calloc(len + 1, sizeof(char));
 	if (!s2)
 		return (0);
-	memcpy((char *) s2, *s1, len + 1);
-	free(*s1);
-	s1 = NULL;
+	ft_memcpy((char *) s2, *s1, len + 1);
 	return (s2);
 }
 
@@ -89,6 +87,8 @@ int	ft_get_next_line(char *buffer, int *j, char **rest, char **line)
 		*line = ft_strjoin(*line, s);
 	else
 		*line = ft_strdup(&s);
+	free(s);
+	s = NULL;
 	return (fndxstate[1]);
 }
 
@@ -136,19 +136,19 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-//int	main(void)
-//{
-//	int		fd;
-//	int		i;
+int	main(void)
+{
+	int		fd;
+	int		i;
 
-//	i = 0;
-//	char *line ="";
-//	fd = open("41_with_nl", O_RDONLY);
-//	while (line)
-//	{
-//		line = get_next_line(fd);
-//		printf("line: %s", line);
-//		free(line);
-//		i++;
-//	}
-//}
+	i = 0;
+	char *line ="";
+	fd = open("41_with_nl", O_RDONLY);
+	while (line)
+	{
+		line = get_next_line(fd);
+		printf("line: %s", line);
+		free(line);
+		i++;
+	}
+}

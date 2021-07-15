@@ -6,7 +6,7 @@
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 10:44:54 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/15 16:58:42 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/07/15 17:06:55 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	ft_get_next_line(char *buffer, int *j, char ***rest, char ***line)
 	return (fndxst[1]);
 }
 
-int	dothething(char *buffer, int fd, char **rest, char **line)
+int	ft_get_next_line_helper(char *buffer, int fd, char **rest, char **line)
 {
 	int	status;
 	int	j;
@@ -125,17 +125,17 @@ int	dothething(char *buffer, int fd, char **rest, char **line)
 char	*get_next_line(int fd)
 {
 	char		*buffer;
-	static char	*rest = NULL;
+	static char	*rest[1024];
 	char		*line;
 	int			status;
-
+	
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	line = NULL;
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if ((!buffer))
 		return (NULL);
-	status = dothething(buffer, fd, &rest, &line);
+	status = ft_get_next_line_helper(buffer, fd, &rest, &line);
 	if (rest && status == 0)
 		free(rest);
 	free(buffer);
@@ -143,19 +143,19 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-int	main(void)
-{
-	int		fd;
-	int		i;
+//int	main(void)
+//{
+//	int		fd;
+//	int		i;
 
-	i = 0;
-	char *line ="";
-	fd = open("41_with_nl", O_RDONLY);
-	while (line)
-	{
-		line = get_next_line(fd);
-		printf("line: %s", line);
-		free(line);
-		i++;
-	}
-}
+//	i = 0;
+//	char *line ="";
+//	fd = open("41_with_nl", O_RDONLY);
+//	while (line)
+//	{
+//		line = get_next_line(fd);
+//		printf("line: %s", line);
+//		free(line);
+//		i++;
+//	}
+//}

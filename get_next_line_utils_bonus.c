@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/08 07:57:56 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/15 15:08:49 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/07/16 08:36:53 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ char	*ft_substr(char const *s, int start, int len)
 	{
 		return (NULL);
 	}
-	len_substr = strlen(&s[start]);
+	len_substr = ft_strlen(&s[start]);
 	if (len_substr > len)
 		len_substr = len;
 	s2 = ft_calloc(len + 1, 1);

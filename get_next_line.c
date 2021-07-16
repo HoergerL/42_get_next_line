@@ -6,20 +6,11 @@
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 10:44:54 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/15 20:31:00 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/07/16 08:35:19 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <stdio.h>
-
-//Achtung calloc
 
 char	*ft_strjoin(char *s1, char *s2)
 {
@@ -128,7 +119,7 @@ char	*get_next_line(int fd)
 	static char	*rest;
 	char		*line;
 	int			status;
-	
+
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	line = NULL;
@@ -142,20 +133,3 @@ char	*get_next_line(int fd)
 	buffer = NULL;
 	return (line);
 }
-
-//int	main(void)
-//{
-//	int		fd;
-//	int		i;
-
-//	i = 0;
-//	char *line ="";
-//	fd = open("41_with_nl", O_RDONLY);
-//	while (line)
-//	{
-//		line = get_next_line(fd);
-//		printf("line: %s", line);
-//		free(line);
-//		i++;
-//	}
-//}

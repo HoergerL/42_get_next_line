@@ -6,11 +6,17 @@
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/08 07:57:56 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/17 09:37:00 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/08/18 18:38:30 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
+
+
+/* 
+This function allocates count * size memory and overwrites the memory with '\0'.
+@return: The function returns a pointer pointing to the begin of the memory.
+*/
 
 void	*ft_calloc(size_t count, size_t size)
 {
@@ -36,6 +42,11 @@ void	*ft_calloc(size_t count, size_t size)
 	return ((void *) point);
 }
 
+/* 
+This function copies n bytes from src to dst.
+@return: The function returns dst.
+*/
+
 void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
 	size_t			i;
@@ -55,6 +66,11 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 	return (dst);
 }
 
+/* 
+This function calculates the lenght of a string s.
+@return: The function returns the lenght of string s.
+*/
+
 int	ft_strlen(const char *s)
 {
 	int	cnt;
@@ -68,6 +84,11 @@ int	ft_strlen(const char *s)
 	}
 	return (cnt);
 }
+
+/* 
+This function creates a substring from s starting at start with the lenght of len.
+@return: The function returns the substring.
+*/
 
 char	*ft_substr(char const *s, int start, int len)
 {
@@ -90,6 +111,11 @@ char	*ft_substr(char const *s, int start, int len)
 	s2[len_substr] = '\0';
 	return (s2);
 }
+
+/* 
+This function searches fot c in the string s.
+@return: The function returns a pointer to the location of c.
+*/
 
 char	*ft_strchr(const char *s, int c)
 {

@@ -6,11 +6,16 @@
 /*   By: lhoerger <lhoerger@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/01 10:44:54 by lhoerger          #+#    #+#             */
-/*   Updated: 2021/07/16 08:35:19 by lhoerger         ###   ########.fr       */
+/*   Updated: 2021/08/18 18:48:38 by lhoerger         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+/* 
+This function joins s1 with s2.
+@return: The function returns the joined string s_join.
+*/
 
 char	*ft_strjoin(char *s1, char *s2)
 {
@@ -41,6 +46,11 @@ char	*ft_strjoin(char *s1, char *s2)
 	return (s_join);
 }
 
+/* 
+This function duplicates string s1.
+@return: The function returns the duplicated s1 calles s2.
+*/
+
 char	*ft_strdup(char **s1)
 {
 	char	*s2;
@@ -56,7 +66,16 @@ char	*ft_strdup(char **s1)
 	return (s2);
 }
 
-int	ft_get_next_line(char *buffer, int *j, char ***rest, char ***line)
+/* 
+This function actually searches for the newline and saves the information read into line.
+@return: The function returns a status:
+	2	:	No newline found, continue searching
+	1	:	Newline found, stop searching and return the line.
+	0	:	EOF or Error
+	to read or if sth went wrong, it returns NULL. 
+*/
+
+int	search_newline(char *buffer, int *j, char ***rest, char ***line)
 {
 	char	*chr;
 	int		fndxst[2];
@@ -85,6 +104,15 @@ int	ft_get_next_line(char *buffer, int *j, char ***rest, char ***line)
 	return (fndxst[1]);
 }
 
+/* 
+This function checks if there is any rest from the last read, otherwise it reads until it finds a newline.
+@return: The function returns a status, given by search_newline:
+	2	:	No newline found, continue searching
+	1	:	Newline found, stop searching and return the line.
+	0	:	EOF or Error
+	to read or if sth went wrong, it returns NULL. 
+*/
+
 int	ft_get_next_line_helper(char *buffer, int fd, char **rest, char **line)
 {
 	int	status;
@@ -97,12 +125,12 @@ int	ft_get_next_line_helper(char *buffer, int fd, char **rest, char **line)
 		 ft_memcpy(buffer, *rest, ft_strlen(*rest) + 1);
 		 free(*rest);
 		 *rest = NULL;
-		 status = (ft_get_next_line(buffer, &j, &rest, &line));
+		 status = (search_newline(buffer, &j, &rest, &line));
 	}
 	while (status == 2 && j == BUFFER_SIZE)
 	{
 		j = read(fd, buffer, BUFFER_SIZE);
-		status = ft_get_next_line(buffer, &j, &rest, &line);
+		status = search_newline(buffer, &j, &rest, &line);
 		if (status != 2 && line == NULL)
 		{
 			free(buffer);
@@ -112,6 +140,12 @@ int	ft_get_next_line_helper(char *buffer, int fd, char **rest, char **line)
 	}
 	return (status);
 }
+
+/* 
+This function reads one line of the file of file descriptor fd.
+@return: The function returns the line, which was read in from the fd. If there is no line anymore 
+	to read or if sth went wrong, it returns NULL. 
+*/
 
 char	*get_next_line(int fd)
 {
